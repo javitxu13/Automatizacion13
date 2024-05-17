@@ -6,7 +6,7 @@ import { auth, GoogleAuthProvider, signInWithPopup } from '../../backend/firebas
 
 function RegisterPage() {
     const navigate = useNavigate();
-    const { setUserProfile } = useContext(UserContext); // Usar contexto para almacenar datos del usuario
+    const { setUserProfile } = useContext(UserContext);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         numEmployees: '',
@@ -34,25 +34,8 @@ function RegisterPage() {
             return;
         }
 
-        fetch('http://localhost:5000/api/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: formData.email, numEmployees: formData.numEmployees }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            setLoading(false);
-            if (data.error) {
-                setError(data.error);
-            } else {
-                setUserProfile(prevProfile => ({ ...prevProfile, email: formData.email, numEmployees: formData.numEmployees }));
-                navigate('/new-form');
-            }
-        })
-        .catch(error => {
-            setError(error.message);
-            setLoading(false);
-        });
+        setUserProfile(prevProfile => ({ ...prevProfile, email: formData.email, numEmployees: formData.numEmployees }));
+        navigate('/new-form');
     };
 
     const handleGoogleLogin = () => {

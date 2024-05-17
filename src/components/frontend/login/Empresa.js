@@ -14,7 +14,7 @@ const industryOptions = [
 ];
 
 function EmpresaPage() {
-    const { setUserProfile } = useContext(UserContext); // Usar contexto para almacenar datos del usuario
+    const { setUserProfile, userProfile } = useContext(UserContext);
     const navigate = useNavigate();
     const [companyName, setCompanyName] = useState('');
     const [industry, setIndustry] = useState(null);
@@ -32,24 +32,27 @@ function EmpresaPage() {
             return;
         }
 
-        fetch('http://localhost:5000/api/empresa/submit', {
+        const userProfileData = {
+            ...userProfile,
+            companyName,
+            industry: industry.label,
+            phone
+        };
+
+        fetch('http://localhost:5000/api/submit-form', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                companyName,
-                industry: industry.value,
-                phone,
-            }),
+            body: JSON.stringify(userProfileData),
         })
         .then(response => response.json())
         .then(data => {
             if (data.error) {
                 throw new Error(data.error);
             }
-            setUserProfile(prevProfile => ({ ...prevProfile, companyName, industry: industry.label, phone }));
-            navigate('/dashboard'); // Redirigir a la página del perfil
+            setUserProfile(userProfileData);
+            navigate('/dashboard');
         })
         .catch((error) => {
             setError(error.message);

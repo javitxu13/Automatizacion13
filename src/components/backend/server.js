@@ -2,12 +2,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const registerRoutes = require('./routes/registerRoutes');
-const rolRoutes = require('./routes/rolRoutes');
-const empresaRoutes = require('./routes/empresaRoutes');
+const userRoutes = require('./routes/userRoutes');
 const processRoutes = require('./routes/processRoutes');
 const departmentRoutes = require('./routes/departmentRoutes');
-const userRoutes = require('./routes/userOrganizationRoutes');
+const userOrganizationRoutes = require('./routes/userOrganizationRoutes');
 const authRoutes = require('./routes/authRoutes');
 const dotenv = require('dotenv');
 
@@ -22,12 +20,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Routes
-app.use('/api', registerRoutes);
-app.use('/api', rolRoutes);
-app.use('/api', empresaRoutes);
+app.use('/api', userRoutes);
 app.use('/api', processRoutes);
 app.use('/api/departments', departmentRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/users', userOrganizationRoutes);
 app.use('/api', authRoutes);
 
 app.use((err, req, res, next) => {

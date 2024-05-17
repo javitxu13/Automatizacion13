@@ -4,7 +4,7 @@ import { UserContext } from './../context/UserContext';
 import '../style/login/NewFormPage.css';
 
 function NewFormPage() {
-    const { setUserProfile } = useContext(UserContext);
+    const { setUserProfile, userProfile } = useContext(UserContext);
     const navigate = useNavigate();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -16,28 +16,8 @@ function NewFormPage() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        fetch('http://localhost:5000/api/user-details/submit-form', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                firstName,
-                lastName,
-                role
-            })
-        })
-        .then(response => response.json().then(data => ({ status: response.status, body: data })))
-        .then(({ status, body }) => {
-            if (status >= 400) {
-                throw new Error(body.error);
-            }
-            setUserProfile(prevProfile => ({ ...prevProfile, firstName, lastName, role }));
-            navigate('/empresa');
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+        setUserProfile(prevProfile => ({ ...prevProfile, firstName, lastName, role }));
+        navigate('/empresa');
     };
 
     return (
