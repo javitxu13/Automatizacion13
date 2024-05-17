@@ -1,0 +1,51 @@
+/* EmpresaPage.css */
+.empresa-container {
+    display: flex;
+}
+
+.empresa-sidebar {
+    width: 30%;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+.empresa-logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.empresa-content {
+    width: 70%;
+    padding: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, .react-select__control, .react-phone-input-2 {
+    margin-bottom: 20px;
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+}
+
+.continue-button {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #00aaff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.error-message {
+    color: red;
+    margin-bottom: 20px;
+}

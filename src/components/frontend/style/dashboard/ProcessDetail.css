@@ -1,0 +1,49 @@
+
+
+.open-button {
+    margin-left: 20px;
+    padding: 5px 10px;
+    background-color: #7b7f83;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.open-button:hover {
+    background-color: #0056b3;
+}
+
+.process-detail {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.process-detail h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.process-detail-item {
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.process-detail-item strong {
+    color: #555;
+}
+
+.process-detail-item:last-child {
+    border-bottom: none;
+}
+
+.process-detail-item:nth-child(odd) {
+    background: #f9f9f9;
+}

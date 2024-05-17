@@ -1,0 +1,111 @@
+.register-container {
+    display: flex;
+    height: 100vh;
+}
+
+.register-sidebar {
+    background-color: #f0f4f8;
+    padding: 20px;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.register-sidebar .register-logo {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.register-form-container {
+    padding: 50px;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.register-form-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.register-form-container p {
+    font-size: 1rem;
+    margin-bottom: 30px;
+}
+
+.register-form-container form {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.register-form-container label {
+    margin-bottom: 5px;
+}
+
+.register-form-container input[type="number"],
+.register-form-container input[type="email"] {
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.terms-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.terms-container input {
+    margin-right: 10px;
+}
+
+.continue-button {
+    padding: 10px 20px;
+    background-color: #00a896;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.social-login-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.social-button {
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.google-button {
+    background-color: #fff;
+}
+
+.microsoft-button {
+    background-color: #f0f4f8;
+}
+
+.error-message {
+    color: red;
+    margin-bottom: 20px;
+}
+
+.login-link {
+    margin-top: 20px;
+}

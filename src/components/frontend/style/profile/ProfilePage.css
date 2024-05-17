@@ -1,0 +1,135 @@
+/* ProfilePage.css */
+
+.unique-profile-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+    transition: transform 0.3s ease;
+}
+
+.unique-profile-container:hover {
+    transform: scale(1.02);
+}
+
+.unique-profile-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 25px;
+    color: #2c3e50;
+    text-align: center;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 10px;
+}
+
+.unique-profile-image-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.unique-profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #2c3e50;
+}
+
+.unique-profile-image-upload {
+    display: block;
+    margin: 10px auto;
+    text-align: center;
+    padding: 10px;
+    border: none;
+    background-color: #3498db;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.unique-profile-image-upload:hover {
+    background-color: #2980b9;
+}
+
+.unique-profile-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.unique-profile-item {
+    display: flex;
+    flex-direction: column;
+    background-color: #ecf0f1;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.unique-profile-item:hover {
+    background-color: #bdc3c7;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.unique-profile-item strong {
+    color: #2980b9;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.unique-profile-item span {
+    color: #2c3e50;
+    font-size: 16px;
+}
+
+.unique-profile-item input {
+    font-size: 16px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #bdc3c7;
+    margin-top: 5px;
+}
+
+.edit-button {
+    background: none;
+    border: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.edit-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.unique-save-button {
+    grid-column: span 2;
+    padding: 10px 20px;
+    background-color: #27ae60;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.unique-save-button:hover {
+    background-color: #1e8449;
+}
+
+@media (max-width: 600px) {
+    .unique-profile-details {
+        grid-template-columns: 1fr;
+    }
+}
