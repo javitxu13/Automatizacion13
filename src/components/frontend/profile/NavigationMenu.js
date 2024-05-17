@@ -57,7 +57,7 @@ const NavigationMenu = () => {
                                 <img src="path/to/plan-icon.png" alt="Plan" />
                             </button>
                             <button onClick={() => handleNavigation('/logout')}>
-                                <img src="path/to/logout-icon.png" alt="Cerrar sesión" />
+                                <img src="path/to/logout-icon.png" alt="Cerrar sesión"/>
                             </button>
                         </div>
                     )}
