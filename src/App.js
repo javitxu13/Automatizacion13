@@ -35,7 +35,6 @@ function App() {
                     <Route path="/procesos" element={<Procesos processes={processes} />} />
                     <Route path="/process-detail/:processId" element={<ProcessDetail processes={processes} />} />
                     <Route path="/organizacion" element={<Organizacion />} />
-                    <Route path="/dashboard" element={<ProfilePage />} />
                     <Route path="/perfil" element={<ProfilePage />} />
                 </Routes>
             </Router>

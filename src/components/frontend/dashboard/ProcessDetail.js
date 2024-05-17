@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import '../style/dashboard/ProcessDetail.css';
+import SidebarOrganizacion from '../../frontend/sidebar/SidebarOrganizacion';
 
 const ProcessDetail = ({ processes }) => {
     const { processId } = useParams();
@@ -12,6 +13,7 @@ const ProcessDetail = ({ processes }) => {
 
     return (
         <div className="process-detail">
+            <SidebarOrganizacion />
             <h2>Detalle del Proceso</h2>
             <div className="process-detail-item"><strong>Nombre:</strong> {process.name}</div>
             <div className="process-detail-item"><strong>Tipo:</strong> {process.type}</div>

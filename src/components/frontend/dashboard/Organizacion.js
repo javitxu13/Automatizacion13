@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import '../style/dashboard/Organizacion.css';
 import Sidebar from '../sidebar/Sidebar';
 import NavigationMenu from '../profile/NavigationMenu';
+import { useNavigate } from 'react-router-dom';
 
 function Organizacion() {
+    const navigate = useNavigate();
     const [isAddDepartmentPopupOpen, setIsAddDepartmentPopupOpen] = useState(false);
     const [isAddEmployeePopupOpen, setIsAddEmployeePopupOpen] = useState(false);
     const [departments, setDepartments] = useState([
@@ -18,16 +20,23 @@ function Organizacion() {
     const [selectedUser, setSelectedUser] = useState('');
 
     useEffect(() => {
+        let isMounted = true;
         fetch('http://localhost:5000/api/users')
             .then(response => response.json())
             .then(data => {
-                if (Array.isArray(data)) {
-                    setAvailableUsers(data);
-                } else {
-                    console.error('Expected an array but got:', data);
+                if (isMounted) {
+                    if (Array.isArray(data)) {
+                        setAvailableUsers(data);
+                    } else {
+                        console.error('Expected an array but got:', data);
+                    }
                 }
             })
             .catch(error => console.error('Error fetching users:', error));
+
+        return () => {
+            isMounted = false; // Cleanup the effect
+        };
     }, []);
 
     const toggleAddDepartmentPopup = () => {
@@ -81,10 +90,14 @@ function Organizacion() {
         }
     };
 
+    const handleNavigation = (path) => {
+        navigate(path);
+    };
+
     return (
         <div className="Organizacion">
             <div className="sidebar">
-                <Sidebar />
+                <Sidebar handleNavigation={handleNavigation} />
             </div>
             <div className="main-content">
                 <div className="header">
@@ -92,7 +105,6 @@ function Organizacion() {
                     <div className="profile">
                         <button className="new-department-btn" onClick={toggleAddDepartmentPopup}>Nuevo departamento</button>
                         <NavigationMenu />
-
                     </div>
                 </div>
                 <div className="department-list">

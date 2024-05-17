@@ -13,9 +13,9 @@
 }
 
 .sidebar .fanci-logo {
-    font-size: 24px;
+    font-size: 34px;
     font-weight: bold;
-    color: #ECF0F1;
+    color: #00ccff;
     margin-bottom: 30px;
 }
 
@@ -29,6 +29,13 @@
     transition: background-color 0.3s ease;
 }
 
+.sidebar-icon {
+    width: 50px !important; /* Tamaño ajustado */
+    height: 50px !important ; /* Tamaño ajustado */
+    margin-bottom: 10px;
+    margin-left: 20px;
+}
+
 .sidebar-item img {
     width: 20px;
     height: 20px;
@@ -39,40 +46,46 @@
     background-color: #34495E;
 }
 
-.sidebar-item span {
-    font-size: 18px;
-    color: #ECF0F1;
-}
-
 /* Individual item styles */
 .fanci-create-item {
-    background-color: #E74C3C;
+    background-color: #ffffff;
 }
 
 .fanci-dashboard-item {
-    background-color: #3498DB;
+    background-color: #ffffff;
 }
 
 .fanci-procesos-item {
-    background-color: #E67E22;
+    background-color: #ffffff;
 }
 
 .fanci-organizacion-item {
-    background-color: #9B59B6;
+    background-color: #ffffff;
 }
 
 .sidebar-item.fanci-create-item:hover {
-    background-color: #C0392B;
+    background-color: #3498DB;
+   color: #ffffff;
+   transition: 0.8s;
 }
 
 .sidebar-item.fanci-dashboard-item:hover {
-    background-color: #2980B9;
+    background-color: #3498DB;
+    color: #ffffff;
+    transition: 0.8s;
+
 }
 
 .sidebar-item.fanci-procesos-item:hover {
-    background-color: #D35400;
+    background-color: #3498DB;
+    color: #ffffff;
+    transition: 0.8s;
+
 }
 
 .sidebar-item.fanci-organizacion-item:hover {
-    background-color: #8E44AD;
+    background-color: #3498DB;
+    color: #ffffff;
+    transition: 0.8s;
+
 }

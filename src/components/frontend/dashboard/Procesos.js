@@ -58,22 +58,23 @@ const Procesos = ({ processes }) => {
         navigate(`/process-detail/${index}`);
     };
 
+    const handleNavigation = (path) => {
+        navigate(path);
+    };
+
     return (
         <div className="procesos">
             <div className="sidebar">
-                <Sidebar />
+                <Sidebar handleNavigation={handleNavigation} />
             </div>
             <div className="main-content">
                 <div className="header">
-                    <div className="user-info">
-                    </div>
+                    <div className="user-info"></div>
                     <button className="new-process-button" onClick={handleNewProcessClick}>
                         Nuevo proceso
                     </button>
                     <NavigationMenu />
-
                 </div>
-
                 <div className="table-container">
                     <a href="https://www.notion.so/your-database-link" target="_blank" rel="noopener noreferrer">
                         <img className='imageNotion' src={notionIcon} alt="Notion" />
