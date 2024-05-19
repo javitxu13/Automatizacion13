@@ -56,7 +56,7 @@ const NavigationMenu = () => {
                             <button onClick={() => handleNavigation('/plan')}>
                                 <img src="path/to/plan-icon.png" alt="Plan" />
                             </button>
-                            <button onClick={() => handleNavigation('/logout')}>
+                            <button onClick={() => handleNavigation('/')}>
                                 <img src="path/to/logout-icon.png" alt="Cerrar sesión" />
                             </button>
                         </div>

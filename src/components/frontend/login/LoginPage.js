@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { auth, googleProvider, signInWithPopup } from '../../backend/firebase/firebaseConfig';
-import { useContext } from 'react';
+import { auth, signInWithEmailAndPassword, googleProvider, signInWithPopup } from '../../backend/firebase/firebaseConfig';
 import { UserContext } from '../context/UserContext';
 import '../style/login/LoginPage.css';
 
@@ -17,40 +16,20 @@ function LoginPage() {
     const handleEmailChange = (event) => setEmail(event.target.value);
     const handlePasswordChange = (event) => setPassword(event.target.value);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         setLoading(true);
         setError('');  // Reset errors
         console.log('Attempting to login with email:', email);
 
-        fetch('http://localhost:5000/api/users/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email,
-                password
-            })
-        })
-        .then(response => {
-            return response.json().then(data => {
-                if (!response.ok) {
-                    throw new Error(data.error);
-                }
-                return data;
-            });
-        })
-        .then(data => {
-            console.log('Success:', data);
-            setLoading(false);
-            navigate('/');  // Redirect to home page or wherever you need
-        })
-        .catch((error) => {
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            navigate('/dashboard');  // Redirect to dashboard page
+        } catch (error) {
             console.error('Error:', error);
             setError(error.message);
             setLoading(false);
-        });
+        }
     };
 
     const handleGoogleLogin = () => {

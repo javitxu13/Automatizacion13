@@ -1,107 +1,113 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { auth, googleProvider, signInWithPopup } from '../../backend/firebase/firebaseConfig';
+import { UserContext } from './../context/UserContext';
 import '../style/login/RegisterPage.css';
+import { auth, googleProvider, createUserWithEmailAndPassword, signInWithPopup } from '../../backend/firebase/firebaseConfig';
 
 function RegisterPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+    const { setUserProfile } = useContext(UserContext);
     const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        numEmployees: '',
+        email: '',
+        terms: false,
+    });
     const [error, setError] = useState('');
 
-    const navigate = useNavigate();
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: type === 'checkbox' ? checked : value,
+        }));
+    };
 
-    const handleEmailChange = (event) => setEmail(event.target.value);
-    const handlePasswordChange = (event) => setPassword(event.target.value);
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setLoading(true);
-        setError('');  // Reset errors
-        console.log('Attempting to register with email:', email);
+        setError('');
 
-        fetch('http://localhost:5000/api/users/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email,
-                password
-            })
-        })
-        .then(response => {
-            return response.json().then(data => {
-                if (!response.ok) {
-                    throw new Error(data.error);
-                }
-                return data;
-            });
-        })
-        .then(data => {
-            console.log('Success:', data);
+        if (!formData.numEmployees || !formData.email || !formData.terms) {
+            setError('Por favor, complete todos los campos y acepte los términos.');
             setLoading(false);
-            navigate('/');  // Redirect to home page or wherever you need
-        })
-        .catch((error) => {
-            console.error('Error:', error);
+            return;
+        }
+
+        try {
+            await createUserWithEmailAndPassword(auth, formData.email, 'temporaryPassword');
+            setUserProfile(prevProfile => ({ ...prevProfile, email: formData.email, numEmployees: formData.numEmployees }));
+            navigate('/new-form');
+        } catch (error) {
             setError(error.message);
             setLoading(false);
-        });
+        }
     };
 
     const handleGoogleLogin = () => {
-        setLoading(true);
-        setError('');
         signInWithPopup(auth, googleProvider)
             .then((result) => {
-                console.log('Google login successful:', result.user);
-                setLoading(false);
-                navigate('/');
+                console.log(result.user);
+                setUserProfile(prevProfile => ({ ...prevProfile, email: result.user.email }));
+                navigate('/empresa');
             })
             .catch((error) => {
-                console.error('Google login error:', error);
+                console.error('Error:', error);
                 setError(error.message);
-                setLoading(false);
             });
     };
 
     return (
         <div className="register-container">
-            <div className="register-logo">DGR</div>
-            <div className="register-title">Regístrate con...</div>
-
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    placeholder="Correo electrónico"
-                    required
-                    aria-label="Correo electrónico"
-                />
-                <input
-                    type="password"
-                    value={password}
-                    onChange={handlePasswordChange}
-                    placeholder="Contraseña"
-                    required
-                    aria-label="Contraseña"
-                />
-                <button
-                    type="submit"
-                    className="continue-button"
-                    disabled={loading}
-                >
-                    {loading ? 'Cargando...' : 'Continuar'}
-                </button>
-            </form>
-            <div className="social-logins">
-                <button onClick={handleGoogleLogin} className="google-login">Google</button>
+            <div className="register-sidebar">
+                <div className="register-logo">DGR</div>
+                <p>Empieza a dominar tus procesos</p>
             </div>
-            {error && <div className="error-message">{error}</div>}
-            <button className="forgot-password">¿Has olvidado tu contraseña?</button>
-            <div className="login-link">¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link></div>
+            <div className="register-form-container">
+                <h2>Cuéntanos sobre tu negocio</h2>
+                <p>Necesitamos algo de información para mejorar tu experiencia</p>
+                <form onSubmit={handleSubmit}>
+                    <label htmlFor="numEmployees">Número de empleados</label>
+                    <input
+                        type="number"
+                        id="numEmployees"
+                        name="numEmployees"
+                        value={formData.numEmployees}
+                        onChange={handleChange}
+                    />
+                    <label htmlFor="email">Correo electrónico de la empresa</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                    />
+                    <div className="terms-container">
+                        <input
+                            type="checkbox"
+                            id="terms"
+                            name="terms"
+                            checked={formData.terms}
+                            onChange={handleChange}
+                        />
+                        <label htmlFor="terms">
+                            He leído y acepto los Términos y Condiciones y el tratamiento de mis datos de conformidad con la Política de Privacidad
+                        </label>
+                    </div>
+                    {error && <div className="error-message">{error}</div>}
+                    <button type="submit" className="continue-button" disabled={loading}>
+                        {loading ? 'Cargando...' : 'Continuar'}
+                    </button>
+                </form>
+                <div className="social-login-buttons">
+                    <button className="social-button google-button" onClick={handleGoogleLogin}>Continuar con Google</button>
+                    <button className="social-button microsoft-button">Continuar con Microsoft</button>
+                </div>
+                <div className="login-link">
+                    ¿Ya tienes cuenta? <Link to="/login">Iniciar sesión</Link>
+                </div>
+            </div>
         </div>
     );
 }

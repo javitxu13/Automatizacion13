@@ -12,6 +12,7 @@ import ProcessDetail from './components/frontend/dashboard/ProcessDetail';
 import Organizacion from './components/frontend/dashboard/Organizacion';
 import ProfilePage from './components/frontend/profile/ProfilePage';
 import { UserProvider } from './components/frontend/context/UserContext';
+import ResetPasswordPage from './components/frontend/login/ResetPasswordPage';
 
 function App() {
     const [processes, setProcesses] = useState([]);
@@ -36,6 +37,7 @@ function App() {
                     <Route path="/process-detail/:processId" element={<ProcessDetail processes={processes} />} />
                     <Route path="/organizacion" element={<Organizacion />} />
                     <Route path="/perfil" element={<ProfilePage />} />
+                    <Route path="/reset-password" element={<ResetPasswordPage />} />
                 </Routes>
             </Router>
         </UserProvider>
