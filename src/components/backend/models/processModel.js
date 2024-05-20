@@ -32,16 +32,16 @@ const Process = {
             const formattedResults = results.map(process => {
                 let tools, collaborators;
                 try {
-                    tools = JSON.parse(process.tools || '[]');
+                    tools = JSON.parse(process.tools);
                 } catch (error) {
                     console.error('Error parsing tools JSON:', error);
-                    tools = [];
+                    tools = process.tools;
                 }
                 try {
-                    collaborators = JSON.parse(process.collaborators || '[]');
+                    collaborators = JSON.parse(process.collaborators);
                 } catch (error) {
                     console.error('Error parsing collaborators JSON:', error);
-                    collaborators = [];
+                    collaborators = process.collaborators;
                 }
                 return {
                     ...process,

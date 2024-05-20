@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import notionIcon from '../../frontend/style/icons/n.png';
 import Sidebar from '../sidebar/Sidebar';
 import NavigationMenu from '../profile/NavigationMenu';
-import { auth } from '../../backend/firebase/firebaseConfig'; // Asegúrate de que este path sea correcto
+import { auth } from '../../backend/firebase/firebaseConfig';
 
 const Procesos = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -28,7 +28,7 @@ const Procesos = () => {
                 throw new Error('User is not authenticated');
             }
 
-            let token = await auth.currentUser.getIdToken(true); // Renueva el token
+            let token = await auth.currentUser.getIdToken(true);
             console.log('Token:', token); // Verifica el token en la consola
             let response = await fetch('http://localhost:5000/api/processes', {
                 headers: {
@@ -38,7 +38,6 @@ const Procesos = () => {
             });
 
             if (!response.ok) {
-                // Manejo de errores HTTP
                 if (response.status === 403) {
                     throw new Error('Failed to authenticate token');
                 }
@@ -55,7 +54,7 @@ const Procesos = () => {
         } catch (error) {
             setError(error.message);
             if (error.message === 'User is not authenticated' || error.message === 'Failed to authenticate token') {
-                navigate('/login'); // Redirigir a login si el usuario no está autenticado
+                navigate('/login');
             }
         } finally {
             setLoading(false);
@@ -218,8 +217,8 @@ const Procesos = () => {
                                         </td>
                                     )}
                                     {visibleColumns.department && <td>{process.department}</td>}
-                                    {visibleColumns.collaborators && <td>{process.collaborators.join(', ')}</td>}
-                                    {visibleColumns.tools && <td>{process.tools.join(', ')}</td>}
+                                    {visibleColumns.collaborators && <td>{Array.isArray(process.collaborators) ? process.collaborators.join(', ') : process.collaborators}</td>}
+                                    {visibleColumns.tools && <td>{Array.isArray(process.tools) ? process.tools.join(', ') : process.tools}</td>}
                                 </tr>
                             ))}
                         </tbody>

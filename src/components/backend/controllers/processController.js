@@ -2,6 +2,13 @@ const Process = require('../models/processModel');
 
 const addProcess = (req, res) => {
     const processData = { ...req.body, userId: req.userId };
+    // Verificación de formato JSON
+    if (!Array.isArray(processData.tools)) {
+        processData.tools = [processData.tools];
+    }
+    if (!Array.isArray(processData.collaborators)) {
+        processData.collaborators = [processData.collaborators];
+    }
     Process.create(processData, (err, result) => {
         if (err) {
             console.error('Error adding process:', err);
