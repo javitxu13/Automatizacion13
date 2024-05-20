@@ -1,6 +1,31 @@
 import React, { useState } from 'react';
 import '../style/dashboard/NewProcess.css';
 import { useNavigate } from 'react-router-dom';
+import { auth } from '../../backend/firebase/firebaseConfig';
+
+const Dropdown = ({ label, items, selectedItems, onSelect, onRemove, showDropdown, toggleDropdown }) => (
+    <div className="form-group">
+        <label>{label}</label>
+        <div className="dropdown-container">
+            {selectedItems.map((item, index) => (
+                <div key={`${item}-${index}`} className="dropdown-item">
+                    {item}
+                    <button type="button" onClick={() => onRemove(item)}>x</button>
+                </div>
+            ))}
+            <button type="button" onClick={toggleDropdown}>+</button>
+            {showDropdown && (
+                <div className="dropdown">
+                    {items.map((item, index) => (
+                        <div key={`${item}-${index}`} onClick={() => onSelect(item)}>
+                            {item}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    </div>
+);
 
 const NewProcess = ({ addProcess }) => {
     const [formData, setFormData] = useState({
@@ -11,13 +36,15 @@ const NewProcess = ({ addProcess }) => {
         responsible: '',
         collaborators: [],
         objective: '',
+        status: 'active',
+        priority: 'medium'
     });
 
     const [availableTools] = useState(['Tool 1', 'Tool 2', 'Tool 3']);
     const [availableCollaborators] = useState(['Collaborator 1', 'Collaborator 2', 'Collaborator 3']);
     const [showToolDropdown, setShowToolDropdown] = useState(false);
     const [showCollaboratorDropdown, setShowCollaboratorDropdown] = useState(false);
-
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -25,23 +52,36 @@ const NewProcess = ({ addProcess }) => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSave = () => {
-        fetch('http://localhost:5000/api/processes', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            addProcess(data); // Update the parent component with the new process
+    const handleSave = async () => {
+        if (!formData.name || !formData.type || !formData.department || !formData.responsible) {
+            setError('Por favor, completa todos los campos obligatorios.');
+            return;
+        }
+
+        try {
+            const token = await auth.currentUser.getIdToken(true);
+
+            const response = await fetch('http://localhost:5000/api/processes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Error guardando el proceso.');
+            }
+
+            const data = await response.json();
+            addProcess(data);
             navigate('/procesos');
-        })
-        .catch(error => {
+        } catch (error) {
             console.error('There was an error saving the process!', error);
-        });
+            setError(error.message);
+        }
     };
 
     const addTool = (tool) => {
@@ -75,6 +115,7 @@ const NewProcess = ({ addProcess }) => {
     return (
         <div className="new-process">
             <h2>Nuevo Proceso</h2>
+            {error && <p className="error-message">{error}</p>}
             <div className="form-group">
                 <label>Nombre</label>
                 <input 
@@ -82,6 +123,7 @@ const NewProcess = ({ addProcess }) => {
                     name="name" 
                     value={formData.name} 
                     onChange={handleChange} 
+                    required
                 />
             </div>
             <div className="form-group">
@@ -90,7 +132,9 @@ const NewProcess = ({ addProcess }) => {
                     name="type" 
                     value={formData.type} 
                     onChange={handleChange}
+                    required
                 >
+                    <option value="">Selecciona un tipo</option>
                     <option value="Operativo">Operativo</option>
                     <option value="Estratégico">Estratégico</option>
                     <option value="Soporte">Soporte</option>
@@ -103,72 +147,77 @@ const NewProcess = ({ addProcess }) => {
                     name="department" 
                     value={formData.department} 
                     onChange={handleChange}
+                    required
                 >
+                    <option value="">Selecciona un departamento</option>
                     <option value="Recursos Humanos">Recursos Humanos</option>
                     <option value="IT">IT</option>
                     <option value="Marketing">Marketing</option>
                 </select>
             </div>
-            <div className="form-group">
-                <label>Herramientas</label>
-                <div className="tools-container">
-                    {formData.tools.map((tool) => (
-                        <div key={tool} className="tool-item">
-                            {tool}
-                            <button type="button" onClick={() => removeTool(tool)}>x</button>
-                        </div>
-                    ))}
-                    <button type="button" onClick={() => setShowToolDropdown(!showToolDropdown)}>+</button>
-                    {showToolDropdown && (
-                        <div className="tool-dropdown">
-                            {availableTools.map((tool) => (
-                                <div key={tool} onClick={() => addTool(tool)}>
-                                    {tool}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </div>
+            <Dropdown
+                label="Herramientas"
+                items={availableTools}
+                selectedItems={formData.tools}
+                onSelect={addTool}
+                onRemove={removeTool}
+                showDropdown={showToolDropdown}
+                toggleDropdown={() => setShowToolDropdown(!showToolDropdown)}
+            />
             <div className="form-group">
                 <label>Responsable</label>
                 <select 
                     name="responsible" 
                     value={formData.responsible} 
                     onChange={handleChange}
+                    required
                 >
+                    <option value="">Selecciona un responsable</option>
                     <option value="Responsable 1">Responsable 1</option>
                     <option value="Responsable 2">Responsable 2</option>
                 </select>
             </div>
-            <div className="form-group">
-                <label>Colaboradores</label>
-                <div className="collaborators-container">
-                    {formData.collaborators.map((collaborator) => (
-                        <div key={collaborator} className="collaborator-item">
-                            {collaborator}
-                            <button type="button" onClick={() => removeCollaborator(collaborator)}>x</button>
-                        </div>
-                    ))}
-                    <button type="button" onClick={() => setShowCollaboratorDropdown(!showCollaboratorDropdown)}>+</button>
-                    {showCollaboratorDropdown && (
-                        <div className="collaborator-dropdown">
-                            {availableCollaborators.map((collaborator) => (
-                                <div key={collaborator} onClick={() => addCollaborator(collaborator)}>
-                                    {collaborator}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </div>
+            <Dropdown
+                label="Colaboradores"
+                items={availableCollaborators}
+                selectedItems={formData.collaborators}
+                onSelect={addCollaborator}
+                onRemove={removeCollaborator}
+                showDropdown={showCollaboratorDropdown}
+                toggleDropdown={() => setShowCollaboratorDropdown(!showCollaboratorDropdown)}
+            />
             <div className="form-group">
                 <label>Objetivo</label>
                 <textarea 
                     name="objective" 
                     value={formData.objective} 
                     onChange={handleChange}
+                    required
                 />
+            </div>
+            <div className="form-group">
+                <label>Estado</label>
+                <select 
+                    name="status" 
+                    value={formData.status} 
+                    onChange={handleChange}
+                >
+                    <option value="active">Activo</option>
+                    <option value="inactive">Inactivo</option>
+                    <option value="completed">Completado</option>
+                </select>
+            </div>
+            <div className="form-group">
+                <label>Prioridad</label>
+                <select 
+                    name="priority" 
+                    value={formData.priority} 
+                    onChange={handleChange}
+                >
+                    <option value="low">Baja</option>
+                    <option value="medium">Media</option>
+                    <option value="high">Alta</option>
+                </select>
             </div>
             <button className="save-button" onClick={handleSave}>Guardar</button>
         </div>

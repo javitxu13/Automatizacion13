@@ -1,123 +1,118 @@
+/* Procesos.css */
 .procesos {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
 }
 
 .sidebar {
-    width: 80px;
     background-color: #2c3e50;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 0;
-}
-
-.sidebar-item {
-    margin: 20px 0;
-    padding: 10px;
-    cursor: pointer;
-    background-color: transparent;
-    border: none;
-    color: white;
-    text-align: center;
-}
-
-.sidebar-item img {
-    width: 40px;
-    height: 40px;
-}
-.imageNotion{
-    width: 40px;
-}
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
+    color: #ecf0f1;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .main-content {
-    flex: 1;
+    flex-grow: 1;
     padding: 20px;
-    background-color: #ecf0f1;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ecf0f1;
+    padding-bottom: 10px;
 }
 
 .user-info {
-    display: flex;
-    align-items: center;
-}
-
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    font-size: 14px;
+    color: #7f8c8d;
 }
 
 .new-process-button {
-    background-color: #1abc9c;
-    color: white;
+    background-color: #3498db;
+    color: #fff;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
-    font-size: 16px;
     border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.new-process-button:hover {
+    background-color: #2980b9;
 }
 
 .table-container {
     margin-top: 20px;
 }
 
+.imageNotion {
+    width: 40px;
+    height: 40px;
+}
+
 .table-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 10px;
-    position: relative;
 }
 
 .export-button, .columns-button {
-    background-color: #1abc9c;
-    color: white;
+    background-color: #3498db;
+    color: #fff;
     border: none;
-    padding: 5px 10px;
+    padding: 8px 15px;
     cursor: pointer;
-    margin-right: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.export-button:hover, .columns-button:hover {
+    background-color: #2980b9;
 }
 
 .column-filter-dropdown {
     position: absolute;
-    top: 40px;
-    right: 0;
-    background-color: white;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
     padding: 10px;
-    z-index: 1000;
+    margin-top: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .column-filter-dropdown label {
-    display: block;
+    display: flex;
+    align-items: center;
     margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.column-filter-dropdown input {
+    margin-right: 5px;
 }
 
 .search-container {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .search-input {
-    width: 200px;
-    padding: 5px;
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    margin-right: 10px;
 }
 
 .search-icon {
-    margin-left: 5px;
+    font-size: 20px;
+    color: #7f8c8d;
 }
 
 .process-table {
@@ -125,13 +120,43 @@
     border-collapse: collapse;
 }
 
-.process-table th, .process-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
+.process-table thead th {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px;
+    border: 1px solid #bdc3c7;
     text-align: left;
 }
 
-.process-table th {
-    background-color: #2c3e50;
-    color: white;
+.process-table tbody td {
+    padding: 10px;
+    border: 1px solid #bdc3c7;
+}
+
+.process-table tbody tr:nth-child(even) {
+    background-color: #f4f4f9;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    width: 50%;
+}
+
+.editor-button, .delete-button, .open-button {
+    background-color: #3498db;
+    color: #ffffff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+}
+
+.editor-button:hover, .delete-button:hover, .open-button:hover {
+    background-color: #2980b9;
+}
+
+.open-button {
+    margin-right: 10px;
 }

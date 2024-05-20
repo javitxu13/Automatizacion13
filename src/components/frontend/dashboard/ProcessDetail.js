@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import '../style/dashboard/ProcessDetail.css';
-import SidebarOrganizacion from '../../frontend/sidebar/SidebarOrganizacion';
+import SidebarOrganizacion from '../sidebar/SidebarOrganizacion';
 
 const ProcessDetail = ({ processes }) => {
     const { processId } = useParams();
@@ -22,6 +22,8 @@ const ProcessDetail = ({ processes }) => {
             <div className="process-detail-item"><strong>Responsable:</strong> {process.responsible}</div>
             <div className="process-detail-item"><strong>Colaboradores:</strong> {process.collaborators.join(', ')}</div>
             <div className="process-detail-item"><strong>Objetivo:</strong> {process.objective}</div>
+            <div className="process-detail-item"><strong>Estado:</strong> {process.status}</div>
+            <div className="process-detail-item"><strong>Prioridad:</strong> {process.priority}</div>
         </div>
     );
 };

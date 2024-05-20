@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PhoneInput from 'react-phone-input-2';
 import Select from 'react-select';
@@ -49,12 +49,25 @@ function EmpresaPage() {
 
         try {
             if (auth.currentUser) {
+                try {
+                    await auth.currentUser.getIdToken(true); // Renueva el token
+                } catch (error) {
+                    if (error.code === 'auth/user-token-expired') {
+                        await auth.currentUser.getIdToken(true); // Fuerza la renovación del token si ha expirado
+                    } else {
+                        throw error;
+                    }
+                }
+
                 await sendPasswordResetEmail(auth, userProfile.email);
                 setEmailSent(true); // Indica que se ha enviado el correo de restablecimiento de contraseña
+
+                const idToken = await auth.currentUser.getIdToken(); // Obtiene el token actualizado
                 fetch('http://localhost:5000/api/submit-form', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${idToken}`
                     },
                     body: JSON.stringify(userProfileData),
                 })
@@ -78,29 +91,26 @@ function EmpresaPage() {
         }
     };
 
-    const checkEmailVerification = async () => {
-        if (auth.currentUser) {
-            await auth.currentUser.reload(); // Recarga el estado del usuario
-            if (auth.currentUser.emailVerified) {
-                navigate('/dashboard'); // Si el correo está verificado, permite la navegación
-            } else {
-                alert('Por favor, verifica tu correo electrónico antes de continuar.');
-            }
-        } else {
-            setError('La sesión ha expirado. Por favor, vuelve a iniciar sesión.');
-            navigate('/login');
-        }
-    };
-
     useEffect(() => {
         if (emailSent) {
-            const interval = setInterval(() => {
-                checkEmailVerification(); // Verifica periódicamente si el correo está verificado
+            const interval = setInterval(async () => {
+                if (auth.currentUser) {
+                    try {
+                        await auth.currentUser.reload(); // Recarga el estado del usuario
+                        if (auth.currentUser.emailVerified) {
+                            clearInterval(interval);
+                            alert('Correo verificado. Por favor, cambia tu contraseña.');
+                            navigate('/login'); // Redirige al login después de verificar el correo
+                        }
+                    } catch (error) {
+                        setError(error.message);
+                    }
+                }
             }, 5000); // Verifica cada 5 segundos
 
             return () => clearInterval(interval); // Limpia el intervalo al desmontar el componente
         }
-    }, [emailSent]);
+    }, [emailSent, navigate]);
 
     return (
         <div className="empresa-container">
@@ -144,7 +154,7 @@ function EmpresaPage() {
                 </form>
                 {emailSent && (
                     <div className="verification-message">
-                        <p>Correo de verificación enviado. Por favor, verifica tu correo electrónico.</p>
+                        <p>Correo de restablecimiento de contraseña enviado. Por favor, verifica tu correo electrónico y cambia tu contraseña antes de continuar.</p>
                     </div>
                 )}
             </div>

@@ -5,9 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import notionIcon from '../../frontend/style/icons/n.png';
 import Sidebar from '../sidebar/Sidebar';
 import NavigationMenu from '../profile/NavigationMenu';
+import { auth } from '../../backend/firebase/firebaseConfig'; // Asegúrate de que este path sea correcto
 
-const Procesos = ({ processes }) => {
+const Procesos = () => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [processes, setProcesses] = useState([]);
     const [visibleColumns, setVisibleColumns] = useState({
         id: true,
         name: true,
@@ -16,7 +18,53 @@ const Procesos = ({ processes }) => {
         tools: true
     });
     const [isColumnFilterOpen, setIsColumnFilterOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
+
+    const fetchProcesses = async () => {
+        try {
+            if (!auth.currentUser) {
+                throw new Error('User is not authenticated');
+            }
+
+            let token = await auth.currentUser.getIdToken(true); // Renueva el token
+            console.log('Token:', token); // Verifica el token en la consola
+            let response = await fetch('http://localhost:5000/api/processes', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                // Manejo de errores HTTP
+                if (response.status === 403) {
+                    throw new Error('Failed to authenticate token');
+                }
+                throw new Error('Failed to fetch processes');
+            }
+
+            let data = await response.json();
+
+            if (!Array.isArray(data)) {
+                throw new Error('Invalid data format');
+            }
+
+            setProcesses(data);
+        } catch (error) {
+            setError(error.message);
+            if (error.message === 'User is not authenticated' || error.message === 'Failed to authenticate token') {
+                navigate('/login'); // Redirigir a login si el usuario no está autenticado
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchProcesses();
+    }, []);
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
@@ -61,6 +109,18 @@ const Procesos = ({ processes }) => {
     const handleNavigation = (path) => {
         navigate(path);
     };
+
+    const addProcess = (newProcess) => {
+        setProcesses((prevProcesses) => [...prevProcesses, newProcess]);
+    };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div className="procesos">

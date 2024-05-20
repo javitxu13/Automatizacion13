@@ -23,7 +23,10 @@ function LoginPage() {
         console.log('Attempting to login with email:', email);
 
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            const token = await user.getIdToken(true);
+            console.log('Token:', token); // Este es tu token JWT
             navigate('/dashboard');  // Redirect to dashboard page
         } catch (error) {
             console.error('Error:', error);

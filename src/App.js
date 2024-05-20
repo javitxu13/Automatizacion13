@@ -13,7 +13,7 @@ import Organizacion from './components/frontend/dashboard/Organizacion';
 import ProfilePage from './components/frontend/profile/ProfilePage';
 import { UserProvider } from './components/frontend/context/UserContext';
 import ResetPasswordPage from './components/frontend/login/ResetPasswordPage';
-
+import PrivateRoute from './components/PrivateRoute';
 function App() {
     const [processes, setProcesses] = useState([]);
 
@@ -38,6 +38,7 @@ function App() {
                     <Route path="/organizacion" element={<Organizacion />} />
                     <Route path="/perfil" element={<ProfilePage />} />
                     <Route path="/reset-password" element={<ResetPasswordPage />} />
+                    <Route path="/procesos" element={<PrivateRoute><Procesos /></PrivateRoute>} />
                 </Routes>
             </Router>
         </UserProvider>

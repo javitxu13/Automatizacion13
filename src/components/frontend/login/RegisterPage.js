@@ -1,8 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from './../context/UserContext';
-import '../style/login/RegisterPage.css';
 import { auth, googleProvider, createUserWithEmailAndPassword, signInWithPopup } from '../../backend/firebase/firebaseConfig';
+import { sendEmailVerification } from 'firebase/auth';
+import '../style/login/RegisterPage.css';
 
 function RegisterPage() {
     const navigate = useNavigate();
@@ -35,7 +36,9 @@ function RegisterPage() {
         }
 
         try {
-            await createUserWithEmailAndPassword(auth, formData.email, 'temporaryPassword');
+            const userCredential = await createUserWithEmailAndPassword(auth, formData.email, 'temporaryPassword');
+            const user = userCredential.user;
+            await sendEmailVerification(user);
             setUserProfile(prevProfile => ({ ...prevProfile, email: formData.email, numEmployees: formData.numEmployees }));
             navigate('/new-form');
         } catch (error) {
@@ -47,8 +50,8 @@ function RegisterPage() {
     const handleGoogleLogin = () => {
         signInWithPopup(auth, googleProvider)
             .then((result) => {
-                console.log(result.user);
-                setUserProfile(prevProfile => ({ ...prevProfile, email: result.user.email }));
+                const user = result.user;
+                setUserProfile(prevProfile => ({ ...prevProfile, email: user.email }));
                 navigate('/empresa');
             })
             .catch((error) => {
