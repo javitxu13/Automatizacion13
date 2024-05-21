@@ -15,7 +15,7 @@ const Procesos = () => {
         name: true,
         department: true,
         collaborators: true,
-        tools: true
+        tools: true,
     });
     const [isColumnFilterOpen, setIsColumnFilterOpen] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -28,23 +28,19 @@ const Procesos = () => {
                 throw new Error('User is not authenticated');
             }
 
-            let token = await auth.currentUser.getIdToken(true);
-            console.log('Token:', token); // Verifica el token en la consola
-            let response = await fetch('http://localhost:5000/api/processes', {
+            const token = await auth.currentUser.getIdToken(true);
+            const response = await fetch('http://localhost:5000/api/processes', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
+                    'Content-Type': 'application/json',
+                },
             });
 
             if (!response.ok) {
-                if (response.status === 403) {
-                    throw new Error('Failed to authenticate token');
-                }
                 throw new Error('Failed to fetch processes');
             }
 
-            let data = await response.json();
+            const data = await response.json();
 
             if (!Array.isArray(data)) {
                 throw new Error('Invalid data format');
@@ -53,7 +49,7 @@ const Procesos = () => {
             setProcesses(data);
         } catch (error) {
             setError(error.message);
-            if (error.message === 'User is not authenticated' || error.message === 'Failed to authenticate token') {
+            if (error.message === 'User is not authenticated') {
                 navigate('/login');
             }
         } finally {
@@ -87,10 +83,10 @@ const Procesos = () => {
     };
 
     const handleColumnToggle = (column) => {
-        setVisibleColumns({
-            ...visibleColumns,
-            [column]: !visibleColumns[column]
-        });
+        setVisibleColumns((prevVisibleColumns) => ({
+            ...prevVisibleColumns,
+            [column]: !prevVisibleColumns[column],
+        }));
     };
 
     const toggleColumnFilter = () => {
@@ -101,16 +97,8 @@ const Procesos = () => {
         navigate('/nuevo-proceso');
     };
 
-    const handleOpenDetail = (index) => {
-        navigate(`/process-detail/${index}`);
-    };
-
-    const handleNavigation = (path) => {
-        navigate(path);
-    };
-
-    const addProcess = (newProcess) => {
-        setProcesses((prevProcesses) => [...prevProcesses, newProcess]);
+    const handleOpenDetail = (processId) => {
+        navigate(`/process-detail/${processId}`);
     };
 
     if (loading) {
@@ -123,9 +111,7 @@ const Procesos = () => {
 
     return (
         <div className="procesos">
-            <div className="sidebar">
-                <Sidebar handleNavigation={handleNavigation} />
-            </div>
+            <Sidebar />
             <div className="main-content">
                 <div className="header">
                     <div className="user-info"></div>
@@ -136,53 +122,27 @@ const Procesos = () => {
                 </div>
                 <div className="table-container">
                     <a href="https://www.notion.so/your-database-link" target="_blank" rel="noopener noreferrer">
-                        <img className='imageNotion' src={notionIcon} alt="Notion" />
+                        <img className="imageNotion" src={notionIcon} alt="Notion" />
                     </a>
                     <div className="table-actions">
-                        <button className="export-button" onClick={handleExport}>📥 Exportar</button>
-                        <button className="columns-button" onClick={toggleColumnFilter}>🔧 Filtrar columnas</button>
+                        <button className="export-button" onClick={handleExport}>
+                            📥 Exportar
+                        </button>
+                        <button className="columns-button" onClick={toggleColumnFilter}>
+                            🔧 Filtrar columnas
+                        </button>
                         {isColumnFilterOpen && (
                             <div className="column-filter-dropdown">
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={visibleColumns.id}
-                                        onChange={() => handleColumnToggle('id')}
-                                    />
-                                    Nº
-                                </label>
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={visibleColumns.name}
-                                        onChange={() => handleColumnToggle('name')}
-                                    />
-                                    Nombre proceso
-                                </label>
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={visibleColumns.department}
-                                        onChange={() => handleColumnToggle('department')}
-                                    />
-                                    Departamento
-                                </label>
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={visibleColumns.collaborators}
-                                        onChange={() => handleColumnToggle('collaborators')}
-                                    />
-                                    Colaboradores
-                                </label>
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={visibleColumns.tools}
-                                        onChange={() => handleColumnToggle('tools')}
-                                    />
-                                    Herramientas
-                                </label>
+                                {Object.keys(visibleColumns).map((column) => (
+                                    <label key={column}>
+                                        <input
+                                            type="checkbox"
+                                            checked={visibleColumns[column]}
+                                            onChange={() => handleColumnToggle(column)}
+                                        />
+                                        {column.charAt(0).toUpperCase() + column.slice(1)}
+                                    </label>
+                                ))}
                             </div>
                         )}
                     </div>
@@ -213,12 +173,17 @@ const Procesos = () => {
                                     {visibleColumns.name && (
                                         <td>
                                             {process.name}
-                                            <button className="open-button" onClick={() => handleOpenDetail(index)}>ABRIR</button>
+                                            <button
+                                                className="open-button"
+                                                onClick={() => handleOpenDetail(process.id)}
+                                            >
+                                                ABRIR
+                                            </button>
                                         </td>
                                     )}
                                     {visibleColumns.department && <td>{process.department}</td>}
-                                    {visibleColumns.collaborators && <td>{Array.isArray(process.collaborators) ? process.collaborators.join(', ') : process.collaborators}</td>}
-                                    {visibleColumns.tools && <td>{Array.isArray(process.tools) ? process.tools.join(', ') : process.tools}</td>}
+                                    {visibleColumns.collaborators && <td>{process.collaborators.join(', ')}</td>}
+                                    {visibleColumns.tools && <td>{process.tools.join(', ')}</td>}
                                 </tr>
                             ))}
                         </tbody>
@@ -227,6 +192,6 @@ const Procesos = () => {
             </div>
         </div>
     );
-}
+};
 
 export default Procesos;

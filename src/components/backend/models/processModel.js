@@ -51,6 +51,32 @@ const Process = {
             });
             callback(null, formattedResults);
         });
+    },
+
+    getById: (userId, processId, callback) => {
+        const query = `SELECT * FROM processes WHERE userId = ? AND id = ?`;
+        db.query(query, [userId, processId], (err, results) => {
+            if (err) {
+                return callback(err);
+            }
+            if (results.length === 0) {
+                return callback(null, null);
+            }
+            const process = results[0];
+            try {
+                process.tools = JSON.parse(process.tools);
+            } catch (error) {
+                console.error('Error parsing tools JSON:', error);
+                process.tools = process.tools;
+            }
+            try {
+                process.collaborators = JSON.parse(process.collaborators);
+            } catch (error) {
+                console.error('Error parsing collaborators JSON:', error);
+                process.collaborators = process.collaborators;
+            }
+            callback(null, process);
+        });
     }
 };
 

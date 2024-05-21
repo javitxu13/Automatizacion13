@@ -2,7 +2,6 @@ const Process = require('../models/processModel');
 
 const addProcess = (req, res) => {
     const processData = { ...req.body, userId: req.userId };
-    // Verificación de formato JSON
     if (!Array.isArray(processData.tools)) {
         processData.tools = [processData.tools];
     }
@@ -29,4 +28,19 @@ const getProcesses = (req, res) => {
     });
 };
 
-module.exports = { addProcess, getProcesses };
+const getProcessById = (req, res) => {
+    const userId = req.userId;
+    const processId = req.params.id;
+    Process.getById(userId, processId, (err, process) => {
+        if (err) {
+            console.error('Error fetching process:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        if (!process) {
+            return res.status(404).json({ error: 'Process not found' });
+        }
+        res.status(200).json(process);
+    });
+};
+
+module.exports = { addProcess, getProcesses, getProcessById };

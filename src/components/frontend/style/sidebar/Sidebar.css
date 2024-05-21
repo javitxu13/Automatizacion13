@@ -49,18 +49,25 @@
 /* Individual item styles */
 .fanci-create-item {
     background-color: #ffffff;
+    color: #000000 !important;
 }
 
 .fanci-dashboard-item {
     background-color: #ffffff;
+    color: #000000 !important;
+
 }
 
 .fanci-procesos-item {
     background-color: #ffffff;
+    color: #000000 !important;
+
 }
 
 .fanci-organizacion-item {
     background-color: #ffffff;
+    color: #000000 !important;
+
 }
 
 .sidebar-item.fanci-create-item:hover {
